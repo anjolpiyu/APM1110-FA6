@@ -1,0 +1,108 @@
+---
+title: 'APM1110 FA6: Probability and Probability Distributions'
+author: "Angelina Jolie C. Peña"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# SECTION I. GEOMETRIC DISTRIBUTION
+## Provide an R code for the geometric distribution. The geometric distribution is a probability distribution that models the number of trials required to achieve the first success in a sequence of Bernoulli trials, where each trial has a constant probability of success.
+
+## 1. Set the probability of success
+```{r}
+p <- 0.2
+```
+
+## 2. Generate 1000 random variables from the geometric distribution
+## R's rgeom() gives the number of failures BEFORE the first success. Therefore, +1 is added to obtain the number of trials required to achieve the first success.
+```{r}
+x <- rgeom(1000, p) + 1
+```
+
+## 3. Calculate the basic statistics
+```{r}
+mean_x <- mean(x)
+var_x <- var(x)
+sd_x <- sd(x)
+```
+
+## 4. Print the results using the required output format
+```{r}
+cat("Number of trials required to achieve first success:", 
+    length(x), "\n")
+
+cat("Mean (in 2 decimal places):", 
+    sprintf("%.2f", mean_x), "\n")
+
+cat("Variance (in 2 decimal places):", 
+    sprintf("%.2f", var_x), "\n")
+
+cat("Standard deviation (in 2 decimal places):", 
+    sprintf("%.2f", sd_x), "\n")
+```
+## 5. Plot the histogram of the results
+```{r}
+hist(x,
+     breaks = seq(min(x) - 0.5, max(x) + 0.5, by = 1),
+     main = "Histogram of Geometric Distribution",
+     xlab = "Number of Trials Required for First Success",
+     ylab = "Frequency",
+     col = "lightgray",
+     border = "black")
+
+```
+
+# SECTION II. HYPERGEOMETRIC DISTRIBUTION
+
+## Consider a plant manufacturing IC chips of which 10% are expected to be defective. The chips are packed in boxes for export. Before transportation, a sample is drawn from each box. Estimate the probability that the sample contains more than 10% defectives, when:
+
+## 1. A sample of 10 is selected from a box of 40;
+## 2. A sample of 10 is selected from a box of 5000. 
+
+## Given:
+## 10% of the IC chips are expected to be defective
+```{r}
+p_defective <- 0.10
+```
+
+## A sample of 10 is selected
+```{r}
+n <- 10
+```
+
+## II.1 A sample of 10 is selected from a box of 40
+```{r}
+N1 <- 40                         # Population size
+M1 <- N1 * p_defective           # Number of defective chips
+L1 <- N1 - M1                    # Number of non-defective chips
+
+# More than 10% of 10 chips means MORE THAN 1 defective chip.
+# Therefore, we need P(X > 1), or equivalently P(X >= 2).
+
+prob_more_than_10_1 <- 1 - phyper(1, M1, L1, n)
+
+cat("\nProbability for N = 40:\n")
+cat("P(X > 1) =", sprintf("%.4f", prob_more_than_10_1), "\n")
+cat("Percentage =", sprintf("%.2f%%", prob_more_than_10_1 * 100), "\n")
+```
+## INTERPRETATION: The probability that a sample of 10 chips contains more than 10% defective chips is approximately 25.59%. This means there is about a 25.59% chance that the sample will contain at least 2 defective chips.
+
+## II.2 A sample of 10 is selected from a box of 5000
+```{r}
+N2 <- 5000                       # Population size
+M2 <- N2 * p_defective           # Number of defective chips
+L2 <- N2 - M2                    # Number of non-defective chips
+
+# Again, more than 10% of 10 chips means MORE THAN 1
+# defective chip.
+# Therefore, we calculate P(X > 1) = 1 - P(X <= 1).
+
+prob_more_than_10_2 <- 1 - phyper(1, M2, L2, n)
+
+cat("\nProbability for N = 5000:\n")
+cat("P(X > 1) =", sprintf("%.4f", prob_more_than_10_2), "\n")
+cat("Percentage =", sprintf("%.2f%%", prob_more_than_10_2 * 100), "\n")
+```
+## INTERPRETATION: The probability that a sample of 10 chips contains more than 10% defective chips is approximately 26.39%. This means there is about a 26.39% chance that the sample will contain at least 2 defective chips.
